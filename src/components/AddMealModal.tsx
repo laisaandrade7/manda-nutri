@@ -1,10 +1,10 @@
 import { useState, useMemo, useRef } from 'react';
-import { Camera, Plus, X, Loader2, Check, Trash2 } from 'lucide-react';
+import { Camera, Plus, X, Loader2, Check, Trash2, Sparkles } from 'lucide-react';
 import { COLORS, MEAL_TYPES } from '../lib/constants';
 import { emptyItem, sumItems } from '../lib/types';
 import type { Meal, MealItem, MealType } from '../lib/types';
 import { resizeImageToBase64 } from '../lib/imageUtils';
-import { analyzeMealPhoto } from '../lib/analyzeMeal';
+import { analyzeMealPhoto, analyzeMealText } from '../lib/analyzeMeal';
 
 interface AddMealModalProps {
   initialMeal: Meal | null;
@@ -70,6 +70,40 @@ export function AddMealModal({ initialMeal, onClose, onSave, onDelete }: AddMeal
   function startManual() {
     setItems([emptyItem()]);
     setStage('review');
+  }
+
+  async function handleRecalculate() {
+    const named = items.filter((it) => it.nome.trim() !== '');
+    if (!named.length) return;
+    setAnalyzing(true);
+    setAnalysisNote(null);
+    try {
+      const texto = named.map((it) => (it.porcao.trim() ? `${it.nome} (${it.porcao})` : it.nome)).join('; ');
+      const result = await analyzeMealText(texto);
+      if (result.erro) {
+        setAnalysisNote(`Não consegui recalcular (${result.erro}). Ajuste os itens manualmente.`);
+      } else {
+        if (result.descricao && !description) setDescription(result.descricao);
+        const parsedItems = (result.itens || []).map((it) => ({
+          nome: it.nome || '',
+          porcao: it.porcao || '',
+          calorias: Math.round(Number(it.calorias) || 0),
+          proteina: Math.round(Number(it.proteina) || 0),
+          carboidrato: Math.round(Number(it.carboidrato) || 0),
+          gordura: Math.round(Number(it.gordura) || 0),
+        }));
+        if (parsedItems.length) setItems(parsedItems);
+        setAnalysisNote(
+          result.confianca === 'baixa' ? 'Confiança baixa nessa estimativa — vale conferir os números.' : null
+        );
+      }
+    } catch (err) {
+      console.error('Erro ao recalcular refeição:', err);
+      const message =
+        err instanceof Error ? err.message : 'Não consegui recalcular agora. Confira sua conexão.';
+      setAnalysisNote(message);
+    }
+    setAnalyzing(false);
   }
 
   function updateItem(idx: number, field: keyof MealItem, value: string) {
@@ -192,7 +226,7 @@ export function AddMealModal({ initialMeal, onClose, onSave, onDelete }: AddMeal
             <div className="flex items-center justify-center gap-2 py-8">
               <Loader2 size={18} className="animate-spin" style={{ color: COLORS.protein }} />
               <span className="text-sm" style={{ color: COLORS.textMuted }}>
-                Analisando a foto...
+                {stage === 'review' ? 'Calculando com IA...' : 'Analisando a foto...'}
               </span>
             </div>
           )}
@@ -268,9 +302,19 @@ export function AddMealModal({ initialMeal, onClose, onSave, onDelete }: AddMeal
                 ))}
               </div>
 
-              <button onClick={addItem} className="flex items-center gap-1.5 text-xs mb-4" style={{ color: COLORS.protein }}>
-                <Plus size={14} /> Adicionar item
-              </button>
+              <div className="flex items-center justify-between mb-4">
+                <button onClick={addItem} className="flex items-center gap-1.5 text-xs" style={{ color: COLORS.protein }}>
+                  <Plus size={14} /> Adicionar item
+                </button>
+                <button
+                  onClick={handleRecalculate}
+                  disabled={analyzing || !items.some((it) => it.nome.trim() !== '')}
+                  className="flex items-center gap-1.5 text-xs disabled:opacity-40"
+                  style={{ color: COLORS.protein }}
+                >
+                  <Sparkles size={14} /> Recalcular com IA
+                </button>
+              </div>
 
               <div
                 className="flex items-center justify-between px-3 py-2 rounded-lg mb-4 font-mono text-sm"

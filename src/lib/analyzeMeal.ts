@@ -21,3 +21,11 @@ export async function analyzeMealPhoto(base64: string): Promise<AnalyzeMealResul
   if (error) throw error;
   return data as AnalyzeMealResult;
 }
+
+export async function analyzeMealText(texto: string): Promise<AnalyzeMealResult> {
+  const { data, error } = await supabase.functions.invoke('analyze-meal', {
+    body: { texto },
+  });
+  if (error) throw error;
+  return data as AnalyzeMealResult;
+}
