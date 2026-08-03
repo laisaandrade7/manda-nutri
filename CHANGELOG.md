@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026-08-03] — Recálculo de calorias por IA (refeição manual e correção)
+
+- **Bug corrigido:** ao criar refeição manualmente (sem foto), calorias/macros ficavam sempre em 0 — não existia nenhum cálculo automático nesse fluxo, só a soma dos valores digitados à mão.
+- Edge Function `analyze-meal` adaptada: agora aceita `{ texto }` além de `{ base64 }`. Com texto, usa um prompt próprio (`TEXT_PROMPT`) que estima calorias/macros a partir da descrição dos itens, em vez da imagem.
+- Nova função `analyzeMealText` em `src/lib/analyzeMeal.ts`, client wrapper da Edge Function no modo texto.
+- `AddMealModal.tsx`: novo botão "Recalcular com IA" (ícone Sparkles) ao lado de "Adicionar item" — pega nome+porção de cada item preenchido, envia como texto pra IA e substitui calorias/proteína/carboidrato/gordura pelo retorno. Funciona tanto para preencher uma refeição manual do zero quanto para corrigir uma refeição existente (ex: usuário ajusta o nome/porção de um item que a IA leu errado na foto e pede recálculo).
+- Botão fica desabilitado se nenhum item tiver nome preenchido.
+- Deploy: Edge Function redeployada (`supabase functions deploy analyze-meal`) e frontend rebuildado e enviado via FTP pra `manda-nutri.laisaandrade.com.br` — confirmado respondendo (HTTP 200).
+
 ## [2026-08-03] — Scaffold inicial do projeto Manda
 
 - Criado projeto Vite + React 19 + TypeScript a partir do `prompt-claude-code-calorias.md`, portando 1:1 a lógica do protótipo `CalorieTracker.jsx` (design tokens, geração de dicas, resize de imagem, componentes de UI).

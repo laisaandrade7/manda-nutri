@@ -1,12 +1,12 @@
 # Manda
 
-App web (mobile-first, PWA) de contagem de calorias: tira foto da refeição, a IA identifica itens e macros, você confirma/ajusta, e o app mantém histórico diário com metas de calorias/proteína/carboidrato/gordura e dicas contextuais.
+App web (mobile-first, PWA) de contagem de calorias: tira foto da refeição (ou preenche manualmente), a IA identifica itens e estima macros — inclusive a partir de texto, com o botão "Recalcular com IA" —, você confirma/ajusta, e o app mantém histórico diário com metas de calorias/proteína/carboidrato/gordura e dicas contextuais.
 
 ## Stack
 
 - **Frontend:** React 19 + Vite + TypeScript + Tailwind CSS v4
 - **Backend (proxy da IA):** Supabase Edge Function (Deno)
-- **Banco + Auth:** Supabase (Postgres + Auth via magic link)
+- **Banco + Auth:** Supabase (Postgres + Auth via Google OAuth, restrito a uma conta)
 - **PWA:** vite-plugin-pwa
 - **Deploy frontend:** Hostinger (hospedagem compartilhada) — subdomínio `manda-nutri.laisaandrade.com.br`
 - **IA:** Anthropic Claude (`claude-sonnet-5`) via Edge Function, nunca chamado direto do client

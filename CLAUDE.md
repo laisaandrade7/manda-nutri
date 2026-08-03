@@ -60,9 +60,10 @@ Secret do Supabase (nunca no bundle do client, já configurado):
 - Auth trocada de magic link (spec original) pra Google OAuth, restrito a `laisa.andrade7@gmail.com` — decisão da Laísa durante o teste local.
 - Upload de foto: `capture="environment"` removido do input — sem isso, o navegador mobile abre a câmera direto e não deixa escolher da galeria.
 - HEIC (padrão de foto do iPhone): tenta decodificação nativa primeiro (funciona no Safari/iOS), cai pro `heic2any` como fallback lazy-loaded só se precisar (evita inflar o bundle principal com uma lib de ~345KB que a maioria dos usuários não vai precisar).
+- Edge Function `analyze-meal` aceita `{ base64 }` (foto) ou `{ texto }` (descrição) — usada tanto pra estimar refeição manual quanto pra recalcular itens já existentes, com botão "Recalcular com IA" no `AddMealModal`.
 
 ## Estado atual
 
-Scaffold completo, build e typecheck passando. Projeto Supabase criado e configurado (schema, secret, Edge Function, Auth com Google OAuth + restrição de e-mail). Testado localmente (login, upload de foto) e deployado em produção (`manda-nutri.laisaandrade.com.br`, respondendo 200). Falta testar o fluxo completo (foto → análise → salvar) direto no iPhone.
+Scaffold completo, build e typecheck passando. Projeto Supabase criado e configurado (schema, secret, Edge Function, Auth com Google OAuth + restrição de e-mail). Testado localmente (login, upload de foto) e deployado em produção (`manda-nutri.laisaandrade.com.br`, respondendo 200). Recálculo de calorias por IA (manual e correção pós-foto) implementado e testado em produção pela Laísa. Falta testar o fluxo completo (foto → análise → salvar) direto no iPhone.
 
 **Cuidado:** nunca colar segredos reais (senhas, API keys) em `.env.example` — esse arquivo não é coberto pelo `.gitignore`. Segredos reais só em `.env`.
