@@ -2,6 +2,8 @@
 
 App de contagem de calorias por foto (mobile-first, PWA). Ver `prompt-claude-code-calorias.md` na raiz para a spec completa original.
 
+**Repositório:** https://github.com/laisaandrade7/manda-nutri (privado)
+
 ## Stack
 
 - Frontend: React 19 + Vite 8 + TypeScript + Tailwind CSS v4 (CSS-first, sem `tailwind.config.js`)

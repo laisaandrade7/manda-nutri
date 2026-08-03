@@ -33,6 +33,10 @@
 
 **Pendente:**
 - Substituir ícones placeholder por arte definitiva.
-- Primeiro commit e push (nenhum código foi commitado ainda).
 - Testar fluxo ponta a ponta localmente (`bun run dev` com `.env` real): login por magic link → tirar foto → analisar → salvar → recarregar.
 - Deploy do frontend (build + upload pra Hostinger).
+
+## [2026-08-03] — Repositório GitHub criado
+
+- Repositório privado `laisaandrade7/manda-nutri` criado via `gh repo create` e primeiro commit enviado (branch `main` rastreando `origin/main`).
+- Confirmado antes do push: `.env` e `supabase/.temp/` (estado local do CLI) fora do commit; `.env.example` só com placeholders.
