@@ -55,15 +55,17 @@ Secret do Supabase (nunca no bundle do client, já configurado):
 
 - Tailwind v4 em vez de v3 (spec original pedia v3) — escolha da Laísa por ser o padrão atual.
 - Modelo Anthropic `claude-sonnet-5` em vez de `claude-sonnet-4-6` (spec original) — mais novo e com preço promocional.
-- Ícones do PWA são placeholder — substituir antes do lançamento real.
+- Ícones do PWA/favicon substituídos pela arte da mascote (Manda) — não são mais placeholder.
+- COLORS.bg (token global de fundo) alterado pra `#16120F`, extraído do fundo da ilustração da mascote, pra ela se integrar sem borda visível.
 - Projeto Supabase criado via CLI (não pelo dashboard web) — mais rápido, mesmo padrão usado em outros projetos da Laísa.
 - Auth trocada de magic link (spec original) pra Google OAuth, restrito a `laisa.andrade7@gmail.com` — decisão da Laísa durante o teste local.
 - Upload de foto: `capture="environment"` removido do input — sem isso, o navegador mobile abre a câmera direto e não deixa escolher da galeria.
 - HEIC (padrão de foto do iPhone): tenta decodificação nativa primeiro (funciona no Safari/iOS), cai pro `heic2any` como fallback lazy-loaded só se precisar (evita inflar o bundle principal com uma lib de ~345KB que a maioria dos usuários não vai precisar).
 - Edge Function `analyze-meal` aceita `{ base64 }` (foto) ou `{ texto }` (descrição) — usada tanto pra estimar refeição manual quanto pra recalcular itens já existentes, com botão "Recalcular com IA" no `AddMealModal`.
+- Assets da mascote em `src/assets/`: `manda-mascote.png` (arte original 1024×1024, não usada diretamente na UI), `manda-avatar.webp` (crop de rosto) e `manda-hero.webp` (crop mais aberto, usado grande no login) — ambos WebP otimizados.
 
 ## Estado atual
 
-Scaffold completo, build e typecheck passando. Projeto Supabase criado e configurado (schema, secret, Edge Function, Auth com Google OAuth + restrição de e-mail). Testado localmente (login, upload de foto) e deployado em produção (`manda-nutri.laisaandrade.com.br`, respondendo 200). Recálculo de calorias por IA (manual e correção pós-foto) implementado e testado em produção pela Laísa. Falta testar o fluxo completo (foto → análise → salvar) direto no iPhone.
+Scaffold completo, build e typecheck passando. Projeto Supabase criado e configurado (schema, secret, Edge Function, Auth com Google OAuth + restrição de e-mail). Testado localmente (login, upload de foto) e deployado em produção (`manda-nutri.laisaandrade.com.br`, respondendo 200). Recálculo de calorias por IA (manual e correção pós-foto) implementado e testado em produção pela Laísa. Redesign visual com a mascote (Manda) implementado e testado localmente (login, empty state, tips card, ícones) — ainda não commitado nem deployado. Falta testar o fluxo completo (foto → análise → salvar) direto no iPhone.
 
 **Cuidado:** nunca colar segredos reais (senhas, API keys) em `.env.example` — esse arquivo não é coberto pelo `.gitignore`. Segredos reais só em `.env`.

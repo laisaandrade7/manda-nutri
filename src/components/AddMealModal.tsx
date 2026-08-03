@@ -154,7 +154,11 @@ export function AddMealModal({ initialMeal, onClose, onSave, onDelete }: AddMeal
           <span className="text-sm font-semibold" style={{ color: COLORS.text }}>
             {isEditing ? 'Editar refeição' : 'Nova refeição'}
           </span>
-          <button onClick={onClose} className="p-1.5 active:opacity-60">
+          <button
+            onClick={onClose}
+            className="w-11 h-11 -mr-2.5 flex items-center justify-center active:opacity-60 cursor-pointer"
+            aria-label="Fechar"
+          >
             <X size={18} style={{ color: COLORS.textMuted }} />
           </button>
         </div>
@@ -338,7 +342,7 @@ export function AddMealModal({ initialMeal, onClose, onSave, onDelete }: AddMeal
                 )}
                 <button
                   onClick={handleSave}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium cursor-pointer active:scale-[0.98] transition-transform duration-150"
                   style={{ background: COLORS.protein, color: COLORS.bg }}
                 >
                   <Check size={16} /> Salvar refeição

@@ -28,11 +28,19 @@ export function MealTicket({ meal, index, onEdit, onDelete }: MealTicketProps) {
             {meal.time}
           </span>
         </div>
-        <div className="flex items-center gap-1">
-          <button onClick={() => onEdit(meal)} className="p-1.5 active:opacity-60" aria-label="Editar">
+        <div className="flex items-center -mr-2">
+          <button
+            onClick={() => onEdit(meal)}
+            className="w-11 h-11 flex items-center justify-center active:opacity-60 cursor-pointer"
+            aria-label="Editar"
+          >
             <Pencil size={13} style={{ color: COLORS.textMuted }} />
           </button>
-          <button onClick={() => meal.id && onDelete(meal.id)} className="p-1.5 active:opacity-60" aria-label="Excluir">
+          <button
+            onClick={() => meal.id && onDelete(meal.id)}
+            className="w-11 h-11 flex items-center justify-center active:opacity-60 cursor-pointer"
+            aria-label="Excluir"
+          >
             <Trash2 size={13} style={{ color: COLORS.textMuted }} />
           </button>
         </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, Settings, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Settings, Plus, BarChart3 } from 'lucide-react';
 import { COLORS } from '../lib/constants';
 import { dateKeyFor, formatDisplayDate } from '../lib/types';
 import type { Meal, Targets } from '../lib/types';
@@ -11,6 +11,8 @@ import { MealTicket } from '../components/MealTicket';
 import { TipsCard } from '../components/TipsCard';
 import { AddMealModal } from '../components/AddMealModal';
 import { SettingsModal } from '../components/SettingsModal';
+import { Dashboard } from './Dashboard';
+import mandaAvatar from '../assets/manda-avatar.webp';
 
 const DEFAULT_TARGETS: Targets = { calories: 2000, protein: 150, carbs: 200, fat: 65 };
 
@@ -25,6 +27,7 @@ export function Home({ userId }: HomeProps) {
   const [loadingDay, setLoadingDay] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(false);
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   const [storageError, setStorageError] = useState(false);
 
@@ -121,11 +124,19 @@ export function Home({ userId }: HomeProps) {
     setCurrentDate(d);
   }
 
+  if (showDashboard) {
+    return <Dashboard userId={userId} onBack={() => setShowDashboard(false)} />;
+  }
+
   return (
     <div className="min-h-screen w-full flex justify-center" style={{ background: COLORS.bg }}>
       <div className="w-full max-w-md px-4 pt-6 pb-28">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={goPrevDay} className="p-2 rounded-full active:opacity-60" aria-label="Dia anterior">
+          <button
+            onClick={goPrevDay}
+            className="w-11 h-11 flex items-center justify-center rounded-full active:opacity-60 active:scale-95 transition cursor-pointer"
+            aria-label="Dia anterior"
+          >
             <ChevronLeft size={20} style={{ color: COLORS.textMuted }} />
           </button>
           <div className="text-center">
@@ -136,16 +147,28 @@ export function Home({ userId }: HomeProps) {
               {formatDisplayDate(currentDate)}
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center">
             <button
               onClick={goNextDay}
-              className="p-2 rounded-full active:opacity-60"
+              disabled={isToday}
+              className="w-11 h-11 flex items-center justify-center rounded-full active:opacity-60 active:scale-95 transition cursor-pointer disabled:cursor-default"
               style={{ opacity: isToday ? 0.3 : 1 }}
               aria-label="Próximo dia"
             >
               <ChevronRight size={20} style={{ color: COLORS.textMuted }} />
             </button>
-            <button onClick={() => setShowSettings(true)} className="p-2 rounded-full active:opacity-60" aria-label="Configurações">
+            <button
+              onClick={() => setShowDashboard(true)}
+              className="w-11 h-11 flex items-center justify-center rounded-full active:opacity-60 active:scale-95 transition cursor-pointer"
+              aria-label="Ver painel de análises"
+            >
+              <BarChart3 size={20} style={{ color: COLORS.textMuted }} />
+            </button>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="w-11 h-11 flex items-center justify-center rounded-full active:opacity-60 active:scale-95 transition cursor-pointer"
+              aria-label="Configurações"
+            >
               <Settings size={20} style={{ color: COLORS.textMuted }} />
             </button>
           </div>
@@ -172,9 +195,15 @@ export function Home({ userId }: HomeProps) {
         )}
 
         {!loadingDay && meals.length === 0 && (
-          <div className="rounded-lg p-6 text-center mb-4" style={{ background: COLORS.surface, border: `1px dashed ${COLORS.border}` }}>
+          <div
+            className="rounded-lg p-6 text-center mb-4 flex flex-col items-center gap-3"
+            style={{ background: COLORS.surface, border: `1px dashed ${COLORS.border}` }}
+          >
+            <img src={mandaAvatar} alt="" className="w-16 h-16 rounded-full object-cover" style={{ border: `1px solid ${COLORS.border}` }} />
             <p className="text-sm" style={{ color: COLORS.textMuted }}>
-              Nenhuma refeição registrada {isToday ? 'ainda hoje' : 'neste dia'}.
+              A Manda ainda não recebeu nenhum pedido {isToday ? 'hoje' : 'neste dia'}.
+              <br />
+              Que tal registrar a primeira refeição?
             </p>
           </div>
         )}
@@ -206,7 +235,7 @@ export function Home({ userId }: HomeProps) {
             setEditingMeal(null);
             setShowAddModal(true);
           }}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform duration-150 cursor-pointer"
           style={{ background: COLORS.protein }}
           aria-label="Adicionar refeição"
         >

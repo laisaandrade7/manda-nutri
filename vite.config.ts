@@ -11,8 +11,8 @@ export default defineConfig({
         name: 'Manda',
         short_name: 'Manda',
         description: 'Contagem de calorias por foto',
-        theme_color: '#1C1A17',
-        background_color: '#1C1A17',
+        theme_color: '#16120F',
+        background_color: '#16120F',
         display: 'standalone',
         start_url: '/',
         icons: [

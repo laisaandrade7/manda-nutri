@@ -73,7 +73,11 @@ export function SettingsModal({ targets, onClose, onSave }: SettingsModalProps) 
           <span className="text-sm font-semibold" style={{ color: COLORS.text }}>
             Metas diárias
           </span>
-          <button onClick={onClose} className="p-1.5 active:opacity-60">
+          <button
+            onClick={onClose}
+            className="w-11 h-11 -mr-2.5 flex items-center justify-center active:opacity-60 cursor-pointer"
+            aria-label="Fechar"
+          >
             <X size={18} style={{ color: COLORS.textMuted }} />
           </button>
         </div>
@@ -209,7 +213,7 @@ export function SettingsModal({ targets, onClose, onSave }: SettingsModalProps) 
 
           <button
             onClick={handleSave}
-            className="w-full py-3 rounded-lg text-sm font-medium mb-3"
+            className="w-full py-3 rounded-lg text-sm font-medium mb-3 cursor-pointer active:scale-[0.98] transition-transform duration-150"
             style={{ background: COLORS.protein, color: COLORS.bg }}
           >
             Salvar metas

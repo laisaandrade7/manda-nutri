@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { COLORS } from '../lib/constants';
 
 interface GaugeBarProps {
@@ -11,6 +12,18 @@ export function GaugeBar({ consumed, target }: GaugeBarProps) {
   const over = consumed > target;
   const remaining = target - consumed;
   const barColor = pct > 110 ? COLORS.over : pct > 100 ? COLORS.warn : COLORS.good;
+
+  const reducedMotion = useRef(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [displayWidth, setDisplayWidth] = useState(reducedMotion.current ? clamped : 0);
+  useEffect(() => {
+    if (reducedMotion.current) {
+      setDisplayWidth(clamped);
+      return;
+    }
+    const id = requestAnimationFrame(() => setDisplayWidth(clamped));
+    return () => cancelAnimationFrame(id);
+  }, [clamped]);
+
   return (
     <div className="mb-6">
       <div className="flex items-end justify-between mb-2">
@@ -27,7 +40,10 @@ export function GaugeBar({ consumed, target }: GaugeBarProps) {
         </div>
       </div>
       <div className="relative h-3 rounded-full overflow-hidden" style={{ background: COLORS.surfaceAlt }}>
-        <div className="h-full rounded-full transition-all" style={{ width: `${clamped}%`, background: barColor }} />
+        <div
+          className="h-full rounded-full transition-[width] duration-700 ease-out"
+          style={{ width: `${displayWidth}%`, background: barColor }}
+        />
         {[25, 50, 75].map((t) => (
           <div key={t} className="absolute top-0 bottom-0 w-px" style={{ left: `${t}%`, background: COLORS.bg, opacity: 0.5 }} />
         ))}

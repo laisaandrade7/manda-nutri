@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026-08-03] — Redesign visual: mascote da Manda + refinamentos de acessibilidade
+
+- Adicionada a mascote (ilustração autoral da Laísa) em: tela de login (imagem grande, sem recorte), empty state da Home e como avatar no `TipsCard` ("Notas da Manda"), além de favicon e ícones do PWA (192/512/apple-touch-icon) — substituindo os placeholders anteriores.
+- Assets gerados a partir da arte original (`src/assets/manda-mascote.png`, 1024×1024): `manda-avatar.webp` (crop de rosto, usado pequeno) e `manda-hero.webp` (crop mais aberto, usado grande no login), ambos otimizados (~30-80KB vs ~1MB do PNG original).
+- `COLORS.bg` alterado de `#1C1A17` para `#16120F` — cor extraída do fundo da própria ilustração da mascote, pra ela se integrar sem borda visível na tela de login. Aplicado em todo o app (era um token global) e propagado pro `theme-color`/`background_color` do manifest PWA.
+- Revisão de acessibilidade feita com a skill `ui-ux-pro-max`: vários botões de ícone (setas de navegação de dia, engrenagem de configurações, editar/excluir refeição, fechar modais) estavam abaixo da área de toque mínima recomendada (44×44px) — corrigidos.
+- `GaugeBar`: barra de calorias agora anima do zero até o valor real ao carregar a tela, respeitando `prefers-reduced-motion`.
+- Pequenos refinamentos de hover/active state (escala e opacidade) em botões primários.
+- Testado localmente via Playwright (login, empty state, home com refeições, 390px) e `bun run build`/`lint` sem erros.
+
+**Pendente:**
+- Nenhum commit feito ainda — mudanças só locais, aguardando revisão da Laísa.
+
 ## [2026-08-03] — Recálculo de calorias por IA (refeição manual e correção)
 
 - **Bug corrigido:** ao criar refeição manualmente (sem foto), calorias/macros ficavam sempre em 0 — não existia nenhum cálculo automático nesse fluxo, só a soma dos valores digitados à mão.

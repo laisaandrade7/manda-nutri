@@ -2,7 +2,7 @@ import { Coffee, Sun, Moon, Cookie } from 'lucide-react';
 import type { MealType } from './types';
 
 export const COLORS = {
-  bg: '#1C1A17',
+  bg: '#16120F',
   surface: '#242019',
   surfaceAlt: '#2C2721',
   border: '#3A342B',

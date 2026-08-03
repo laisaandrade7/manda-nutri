@@ -38,6 +38,29 @@ export async function getDayMeals(userId: string, date: string): Promise<Meal[]>
   return (data as MealRow[]).map(rowToMeal);
 }
 
+export interface MealWithDate extends Meal {
+  date: string;
+}
+
+export async function getMealsInRange(userId: string, startDate: string, endDate: string): Promise<MealWithDate[]> {
+  const { data, error } = await supabase
+    .from('meals')
+    .select('*, date')
+    .eq('user_id', userId)
+    .gte('date', startDate)
+    .lte('date', endDate)
+    .order('date', { ascending: true })
+    .order('time', { ascending: true });
+  if (error) throw error;
+  return (data as (MealRow & { date: string })[]).map((row) => ({ ...rowToMeal(row), date: row.date }));
+}
+
+export async function getLoggedDates(userId: string, sinceDate: string): Promise<Set<string>> {
+  const { data, error } = await supabase.from('meals').select('date').eq('user_id', userId).gte('date', sinceDate);
+  if (error) throw error;
+  return new Set((data as { date: string }[]).map((row) => row.date));
+}
+
 export async function saveMeal(userId: string, date: string, meal: Meal): Promise<Meal> {
   const { data, error } = await supabase
     .from('meals')

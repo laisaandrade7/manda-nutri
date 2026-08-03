@@ -18,8 +18,10 @@ manda-nutri/
 ├── supabase/
 │   ├── schema.sql                    # tabelas meals + daily_targets, RLS
 │   └── functions/analyze-meal/       # Edge Function — proxy Anthropic API
-├── public/icons/                     # ícones PWA (placeholder atual)
+├── public/
+│   ├── favicon.png, icons/           # ícones PWA/favicon (mascote da Manda)
 ├── src/
+│   ├── assets/                       # arte da mascote (Manda) — original, avatar e versão hero do login
 │   ├── components/                   # GaugeBar, MacroPill, MealTicket, TipsCard, AddMealModal, SettingsModal
 │   ├── lib/                          # supabaseClient, imageUtils, tips, mealsApi, analyzeMeal, types, constants
 │   ├── pages/                        # Login, Home
