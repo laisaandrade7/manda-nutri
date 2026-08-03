@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, LogOut } from 'lucide-react';
 import { COLORS } from '../lib/constants';
+import { supabase } from '../lib/supabaseClient';
 import type { Targets } from '../lib/types';
 
 interface SettingsModalProps {
@@ -46,6 +47,10 @@ export function SettingsModal({ targets, onClose, onSave }: SettingsModalProps) 
     setProtein(Math.round(prot));
     setFat(Math.round(fatG));
     setCarbs(Math.round(carbG));
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
   }
 
   function handleSave() {
@@ -204,10 +209,19 @@ export function SettingsModal({ targets, onClose, onSave }: SettingsModalProps) 
 
           <button
             onClick={handleSave}
-            className="w-full py-3 rounded-lg text-sm font-medium mb-6"
+            className="w-full py-3 rounded-lg text-sm font-medium mb-3"
             style={{ background: COLORS.protein, color: COLORS.bg }}
           >
             Salvar metas
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium mb-6"
+            style={{ background: COLORS.surface, color: COLORS.textMuted, border: `1px solid ${COLORS.border}` }}
+          >
+            <LogOut size={16} />
+            Sair da conta
           </button>
         </div>
       </div>

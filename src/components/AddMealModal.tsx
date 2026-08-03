@@ -54,8 +54,13 @@ export function AddMealModal({ initialMeal, onClose, onSave, onDelete }: AddMeal
           setAnalysisNote('Confiança baixa nessa estimativa — vale conferir os números.');
         }
       }
-    } catch {
-      setAnalysisNote('Não consegui analisar a foto agora. Confira sua conexão ou preencha manualmente.');
+    } catch (err) {
+      console.error('Erro ao analisar refeição:', err);
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Não consegui analisar a foto agora. Confira sua conexão ou preencha manualmente.';
+      setAnalysisNote(message);
       setItems([emptyItem()]);
     }
     setAnalyzing(false);
@@ -174,7 +179,6 @@ export function AddMealModal({ initialMeal, onClose, onSave, onDelete }: AddMeal
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                capture="environment"
                 onChange={handleFileChange}
                 className="hidden"
               />

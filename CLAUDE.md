@@ -8,7 +8,7 @@ App de contagem de calorias por foto (mobile-first, PWA). Ver `prompt-claude-cod
 
 - Frontend: React 19 + Vite 8 + TypeScript + Tailwind CSS v4 (CSS-first, sem `tailwind.config.js`)
 - Backend IA: Supabase Edge Function (`supabase/functions/analyze-meal`), proxy pra Anthropic API (`claude-sonnet-5`)
-- Banco/Auth: Supabase (Postgres + Auth via magic link, sem senha)
+- Banco/Auth: Supabase (Postgres + Auth via Google OAuth, restrito a `laisa.andrade7@gmail.com`)
 - PWA: vite-plugin-pwa
 - Package manager: Bun
 
@@ -29,10 +29,15 @@ bun run lint        # oxlint
 - Schema (`meals`, `daily_targets`, RLS + policies) já aplicado no banco remoto
 - Edge Function `analyze-meal` já deployada
 - Redirect URL `https://manda-nutri.laisaandrade.com.br` já configurada em Auth
+- Provider Google OAuth configurado em Auth → Providers (Client ID/Secret do mesmo OAuth Client usado pelo dash-mq, no Google Cloud Console)
+- Restrição de acesso: só `laisa.andrade7@gmail.com` (checado em `App.tsx`, constante `ALLOWED_EMAIL` em `src/lib/constants.ts`) — não é uma restrição do Supabase, é lógica do app
 
 ## Deploy
 
-- Frontend: build estático (`dist/`) enviado via FTP/File Manager pro subdomínio `manda-nutri.laisaandrade.com.br` (Hostinger, hospedagem compartilhada, pasta `/manda-nutri` — já criado no hPanel)
+- Frontend: `bun run build` → `dist/` enviado via FTP (`lftp`) pro subdomínio `manda-nutri.laisaandrade.com.br` (Hostinger, hospedagem compartilhada, pasta `/manda-nutri`)
+  - Credenciais FTP: mesma conta do `dash-mq` (`~/ai-agents/dash-mq/.env` → `FTP_HOST`, `FTP_USER`, `FTP_PASSWORD`)
+  - Caminho remoto: `/domains/laisaandrade.com.br/public_html/manda-nutri`
+  - Comando: `lftp -u "$FTP_USER,$FTP_PASSWORD" "$FTP_HOST" -e "set ssl:verify-certificate no; mirror -R --delete --verbose dist $FTP_REMOTE_PATH; bye"` (o `--delete` mantém o remoto sincronizado, sem arquivos órfãos de builds antigas)
 - Backend: `supabase functions deploy analyze-meal --project-ref frjpqndpfkukvzufaekb` + `supabase secrets set ANTHROPIC_API_KEY=... --project-ref frjpqndpfkukvzufaekb`
 - Nunca fazer deploy sem `git status` limpo e sem pedir confirmação explícita antes do FTP/push (regra global da Laísa)
 
@@ -52,9 +57,12 @@ Secret do Supabase (nunca no bundle do client, já configurado):
 - Modelo Anthropic `claude-sonnet-5` em vez de `claude-sonnet-4-6` (spec original) — mais novo e com preço promocional.
 - Ícones do PWA são placeholder — substituir antes do lançamento real.
 - Projeto Supabase criado via CLI (não pelo dashboard web) — mais rápido, mesmo padrão usado em outros projetos da Laísa.
+- Auth trocada de magic link (spec original) pra Google OAuth, restrito a `laisa.andrade7@gmail.com` — decisão da Laísa durante o teste local.
+- Upload de foto: `capture="environment"` removido do input — sem isso, o navegador mobile abre a câmera direto e não deixa escolher da galeria.
+- HEIC (padrão de foto do iPhone): tenta decodificação nativa primeiro (funciona no Safari/iOS), cai pro `heic2any` como fallback lazy-loaded só se precisar (evita inflar o bundle principal com uma lib de ~345KB que a maioria dos usuários não vai precisar).
 
 ## Estado atual
 
-Scaffold completo, build e typecheck passando. Projeto Supabase criado e configurado (schema, secret, Edge Function, Auth redirect URL). Ainda sem `.env.local` de exemplo atualizado além do já feito, sem commits, sem deploy do frontend.
+Scaffold completo, build e typecheck passando. Projeto Supabase criado e configurado (schema, secret, Edge Function, Auth com Google OAuth + restrição de e-mail). Testado localmente (login, upload de foto) e deployado em produção (`manda-nutri.laisaandrade.com.br`, respondendo 200). Falta testar o fluxo completo (foto → análise → salvar) direto no iPhone.
 
 **Cuidado:** nunca colar segredos reais (senhas, API keys) em `.env.example` — esse arquivo não é coberto pelo `.gitignore`. Segredos reais só em `.env`.

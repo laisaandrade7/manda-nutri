@@ -16,6 +16,8 @@ export const COLORS = {
   over: '#BD5A34',
 };
 
+export const ALLOWED_EMAIL = 'laisa.andrade7@gmail.com';
+
 export const MEAL_TYPES: Array<{ id: MealType; label: string; icon: typeof Coffee }> = [
   { id: 'cafe', label: 'Café da manhã', icon: Coffee },
   { id: 'almoco', label: 'Almoço', icon: Sun },
